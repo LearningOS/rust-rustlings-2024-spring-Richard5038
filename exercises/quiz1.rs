@@ -24,7 +24,7 @@ fn calculate_price_of_apples(num: i32) -> i32{
         //println!("Wrong input!");
         //break;
     //}
-}
+} //按理来说应该监测异常值，不过也行
 
 // Don't modify this function!
 #[test]
