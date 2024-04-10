@@ -5,11 +5,10 @@
 // Execute `rustlings hint lifetimes3` or use the `hint` watch subcommand for a
 // hint.
 
-// I AM NOT DONE
 
-struct Book {
-    author: &str,
-    title: &str,
+struct Book <'shit1, 'shit2> { //'shit生存周期
+    author: &'shit1 str,
+    title: &'shit2 str,
 }
 
 fn main() {
