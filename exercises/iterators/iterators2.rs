@@ -33,7 +33,8 @@ pub fn capitalize_words_vector(words: &[&str]) -> Vec<String> {
     // }
     // words_vec
     //option 2
-    words.iter().map(|letter|capitalize_first(letter)).collect()
+    // words.iter().map(|letter|capitalize_first(letter)).collect()
+    words.iter().copied().map(capitalize_first).collect()
     //https://kaisery.github.io/trpl-zh-cn/ch13-02-iterators.html 13-15
 }
 
@@ -49,7 +50,7 @@ pub fn capitalize_words_string(words: &[&str]) -> String {
     // }
     // strings
     // String::new()
-    words.iter().map(|letter|capitalize_first(letter)).collect()
+    words.iter().copied().map(capitalize_first).collect()
 }
 
 #[cfg(test)]
