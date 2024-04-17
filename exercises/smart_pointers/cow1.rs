@@ -7,12 +7,17 @@
 // Borrow trait.
 //
 // This exercise is meant to show you what to expect when passing data to Cow.
-// Fix the unit tests by checking for Cow::Owned(_) and Cow::Borrowed(_) at the
+// Fix the unit tests by checking for ，) and Cow::Borrowed(_) at the
 // TODO markers.
 //
 // Execute `rustlings hint cow1` or use the `hint` watch subcommand for a hint.
 
-// I AM NOT DONE
+// Cow 的设计目的是提高性能（减少复制）同时增加灵活性，因为大部分情况下，多用于读多写少的场景。利用 Cow，可以用统一，规范的形式实现，需要写的时候才做一次对象复制。
+
+//     创建语义：Cow::Borrowed(v) 或者 Cow::Owned(v)
+//     获得本体：Cow::into_owned()，得到具有 所有权的值 ，如果之前Cow是Borrowed借用状态，调用into_owned将会克隆，如果已经是Owned状态，将不会克隆
+//     可变借用：Cow::to_mut()，得到一个具有所有权的值的 可变引用 ，注意在已经具有所有权的情况下，也可以调用to_mut但不会产生新的克隆，多次调用to_mut只会产生一次克隆
+
 
 use std::borrow::Cow;
 
@@ -49,6 +54,8 @@ mod tests {
         let mut input = Cow::from(&slice[..]);
         match abs_all(&mut input) {
             // TODO
+            Cow::Borrowed(_) => Ok(()),
+            _ => Err("Expected owned value"),
         }
     }
 
@@ -61,6 +68,8 @@ mod tests {
         let mut input = Cow::from(slice);
         match abs_all(&mut input) {
             // TODO
+            Cow::Owned(_) => Ok(()),
+            _ => Err("Expected owned value"),
         }
     }
 
@@ -73,6 +82,8 @@ mod tests {
         let mut input = Cow::from(slice);
         match abs_all(&mut input) {
             // TODO
+            Cow::Owned(_) => Ok(()),
+            _ => Err("Expected owned value"),
         }
     }
 }

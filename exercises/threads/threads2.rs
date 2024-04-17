@@ -7,25 +7,29 @@
 // Execute `rustlings hint threads2` or use the `hint` watch subcommand for a
 // hint.
 
-// I AM NOT DONE
+//示例 16-15: 使用 Arc<T> 包装一个 Mutex<T> 能够实现在多线程之间共享所有权
 
-use std::sync::Arc;
+use std::sync::{Arc, Mutex};
 use std::thread;
 use std::time::Duration;
 
 struct JobStatus {
-    jobs_completed: u32,
+    jobs_completed: Mutex<u32>, //要改
 }
 
 fn main() {
-    let status = Arc::new(JobStatus { jobs_completed: 0 });
+    let status = Arc::new(JobStatus {
+        jobs_completed: Mutex::new(0),
+    });
     let mut handles = vec![];
     for _ in 0..10 {
         let status_shared = Arc::clone(&status);
         let handle = thread::spawn(move || {
             thread::sleep(Duration::from_millis(250));
             // TODO: You must take an action before you update a shared value
-            status_shared.jobs_completed += 1;
+            // let mut count = status_shared.jobs_completed.lock().unwrap();
+            // *count += 1;
+            *status_shared.jobs_completed.lock().unwrap() += 1;
         });
         handles.push(handle);
     }
@@ -34,6 +38,6 @@ fn main() {
         // TODO: Print the value of the JobStatus.jobs_completed. Did you notice
         // anything interesting in the output? Do you have to 'join' on all the
         // handles?
-        println!("jobs completed {}", ???);
+        println!("jobs completed {}", status.jobs_completed.lock().unwrap());
     }
 }
