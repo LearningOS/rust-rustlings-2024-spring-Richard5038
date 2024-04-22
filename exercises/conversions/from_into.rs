@@ -7,6 +7,8 @@
 // Execute `rustlings hint from_into` or use the `hint` watch subcommand for a
 // hint.
 
+// use std::intrinsics::mir::Len;
+
 #[derive(Debug)]
 struct Person {
     name: String,
@@ -40,10 +42,40 @@ impl Default for Person {
 // If while parsing the age, something goes wrong, then return the default of
 // Person Otherwise, then return an instantiated Person object with the results
 
-// I AM NOT DONE
 
 impl From<&str> for Person {
     fn from(s: &str) -> Person {
+        if s.len() == 0 {
+            return Person::default();
+        }
+        let input: Vec<&str> = s.split(",").collect();
+        if input.len() != 2 {
+            return Person::default();
+        }
+        let name = String::from(input[0]);
+        if name.is_empty() {
+            return Person::default();
+        }
+        let age = input[1];
+        match age.parse::<usize>() {
+            Ok(age) => Person { name, age },
+            Err(_) => Person::default(),
+        }
+        // match s.split_once(",") {
+        //     Some((input1, input2)) => {
+        //         if input1.is_empty() {
+        //             Person::default()
+        //         } else if let Ok(age) = input2.parse::<usize>() {
+        //             Person {
+        //                 name: input1.into(),
+        //                 age: age,
+        //             }
+        //         } else {
+        //             Person::default()
+        //         }
+        //     }
+        //     _ => Person::default(),
+        // }
     }
 }
 
