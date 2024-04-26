@@ -2,7 +2,7 @@
 	heap
 	This question requires you to implement a binary heap function
 */
-// I AM NOT DONE
+// pwa
 
 use std::cmp::Ord;
 use std::default::Default;
@@ -37,7 +37,36 @@ where
     }
 
     pub fn add(&mut self, value: T) {
-        //TODO
+        self.items.push(value); // 将元素添加到向量的末尾
+        self.count += 1; // 元素数量增加
+        self.sift_up(self.count); // 调整堆
+    }
+
+    // 上浮调整
+    fn sift_up(&mut self, mut idx: usize) {
+        if !(idx > 1) {
+            return;
+        }
+
+        let parent_idx = self.parent_idx(idx);
+        if !(self.comparator)(&self.items[idx], &self.items[parent_idx]) {
+            return;
+        }
+
+        self.items.swap(idx, parent_idx);
+        self.sift_up(parent_idx);
+    }
+
+    // 下沉调整
+    fn sift_down(&mut self, mut idx: usize) {
+        while self.children_present(idx) {
+            let smallest_child_idx = self.smallest_child_idx(idx);
+            if (self.comparator)(&self.items[idx], &self.items[smallest_child_idx]) {
+                break;
+            }
+            self.items.swap(idx, smallest_child_idx);
+            idx = smallest_child_idx;
+        }
     }
 
     fn parent_idx(&self, idx: usize) -> usize {
@@ -58,7 +87,18 @@ where
 
     fn smallest_child_idx(&self, idx: usize) -> usize {
         //TODO
-		0
+		let left_idx = self.left_child_idx(idx);
+        let right_idx = self.right_child_idx(idx);
+
+        if right_idx > self.count {
+            left_idx
+        } else {
+            if (self.comparator)(&self.items[left_idx], &self.items[right_idx]) {
+                left_idx
+            } else {
+                right_idx
+            }
+        }
     }
 }
 
@@ -79,13 +119,23 @@ where
 
 impl<T> Iterator for Heap<T>
 where
-    T: Default,
+    T: Default + Clone,
 {
     type Item = T;
 
     fn next(&mut self) -> Option<T> {
         //TODO
-		None
+		if self.count == 0 {
+            None
+        } else {
+            let result = Some(self.items[1].clone()); // 取出顶部元素
+            self.items[1] = self.items.pop().unwrap(); // 将最后一个元素移动到顶部
+            self.count -= 1; // 元素数量减少
+            if self.count > 0 {
+                self.sift_down(1); // 调整堆
+            }
+            result
+        }
     }
 }
 

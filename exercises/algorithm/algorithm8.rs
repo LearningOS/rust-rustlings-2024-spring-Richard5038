@@ -2,7 +2,7 @@
 	queue
 	This question requires you to use queues to implement the functionality of the stac
 */
-// I AM NOT DONE
+// pwa
 
 #[derive(Debug)]
 pub struct Queue<T> {
@@ -68,14 +68,37 @@ impl<T> myStack<T> {
     }
     pub fn push(&mut self, elem: T) {
         //TODO
+        self.q1.enqueue(elem);
     }
     pub fn pop(&mut self) -> Result<T, &str> {
         //TODO
-		Err("Stack is empty")
+        use std::mem::swap;
+        if self.q1.is_empty() {
+            return Err("Stack is empty")
+        }
+
+        while self.q1.size() > 1 {
+            if let temp = self.q1.dequeue() {
+                self.q2.enqueue(temp.unwrap());
+            }
+        }
+
+        let stack_top = self.q1.dequeue().unwrap();
+        swap(&mut self.q1, &mut self.q2);
+        Ok(stack_top)
+        // while let Some(elem) = self.q1.dequeue().ok() {
+        //     if self.q1.size() == 1 {
+        //         // 交换q1和q2，使得下一次操作可以继续在q1上进行
+        //         std::mem::swap(&mut self.q1, &mut self.q2);
+        //         return Ok(elem);
+        //     }
+        //     self.q2.enqueue(elem);
+        // }
+        // Err("Stack is empty")
     }
     pub fn is_empty(&self) -> bool {
 		//TODO
-        true
+        self.q1.is_empty()
     }
 }
 

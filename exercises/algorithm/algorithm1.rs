@@ -2,7 +2,7 @@
 	single linked list merge
 	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
 */
-// I AM NOT DONE
+// pwa
 
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
@@ -29,13 +29,13 @@ struct LinkedList<T> {
     end: Option<NonNull<Node<T>>>,
 }
 
-impl<T> Default for LinkedList<T> {
+impl<T: std::cmp::PartialOrd + Clone> Default for LinkedList<T> {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl<T> LinkedList<T> {
+impl<T: std::cmp::PartialOrd + Clone> LinkedList<T> {
     pub fn new() -> Self {
         Self {
             length: 0,
@@ -72,12 +72,50 @@ impl<T> LinkedList<T> {
 	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
 	{
 		//TODO
+          // 创建一个新的空链表作为合并后的链表
+        let mut merged_list = LinkedList::new();
+
+        // 使用两个临时变量来跟踪当前节点
+        let mut current_a = list_a.start;
+        let mut current_b = list_b.start;
+
+        // 循环，直到两个链表都为空
+        while current_a.is_some() || current_b.is_some() {
+            let val_a = current_a.map(|node| unsafe { (*node.as_ptr()).val.clone() });
+            let val_b = current_b.map(|node| unsafe { (*node.as_ptr()).val.clone() });
+
+            // 比较两个链表头节点的值，将较小的值添加到合并后的链表中
+            match (val_a, val_b) {
+                (Some(va), Some(vb)) => {
+                    if va <= vb {
+                        merged_list.add(va); // 添加值到merged_list，并且不再使用va
+                        current_a = unsafe { (*current_a.unwrap().as_ptr()).next }; // 更新list_a的当前节点
+                    } else {
+                        merged_list.add(vb); // 添加值到merged_list，并且不再使用vb
+                        current_b = unsafe { (*current_b.unwrap().as_ptr()).next }; // 更新list_b的当前节点
+                    }
+                }
+                (Some(va), None) => {
+                    merged_list.add(va); // 添加值到merged_list，并且不再使用va
+                    current_a = unsafe { (*current_a.unwrap().as_ptr()).next }; // 更新list_a的当前节点
+                }
+                (None, Some(vb)) => {
+                    merged_list.add(vb); // 添加值到merged_list，并且不再使用vb
+                    current_b = unsafe { (*current_b.unwrap().as_ptr()).next }; // 更新list_b的当前节点
+                }
+                (None, None) => break,
+            }
+        }
+
+        merged_list
+     }
         
-    Self {
-        length: 0,
-        start: None,
-        end: None,
-}
+        
+//     Self {
+//         length: 0,
+//         start: None,
+//         end: None,
+// }
 }
 
 impl<T> Display for LinkedList<T>
